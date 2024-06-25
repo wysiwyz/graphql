@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: graphql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/GraphQL
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
+graphql:
+  servlet:
+    actuator-metrics: true
+    tracing-enabled: false
+    corsEnabled: true
+
+logging:
+  level:
+    ROOT: INFO
+    com:
+      netflix:
+        graphql:
+          dgs: DEBUG
+          dgs:
+            subscriptions:
+              websockets: DEBUG

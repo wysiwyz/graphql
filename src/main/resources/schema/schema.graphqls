@@ -1,0 +1,46 @@
+# SDL: GraphQL schema definition language
+type Query {
+    cars(filter: VehicleCriteria): [Car]!
+    car(id: ID!): Car
+}
+
+type Mutation {
+    addTag(carId: ID!, tags: [TagInput!]!): Car
+    addQuantity(carId: ID!, quantity: Int!): Car
+}
+
+type Subscription {
+    quantityChanged: Car
+}
+
+type Car {
+    id: String
+    name: String
+    description: String
+    imageUrl: String
+    price: BigDecimal
+    count: Int
+    tags: [Tag]
+    brand: String
+    model: String
+    year: String
+    color: String
+}
+
+input VehicleCriteria {
+    tags: [TagInput] = []
+    name: String = ""
+    page: Int = 1
+    size: Int = 10
+}
+
+input TagInput {
+    name: String
+}
+
+type Tag {
+    id: String
+    name: String
+}
+
+scalar BigDecimal

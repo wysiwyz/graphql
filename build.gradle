@@ -8,6 +8,7 @@ plugins {
 group = 'com.ywz'
 version = '0.0.1-SNAPSHOT'
 
+// sourceCompatibility = JavaVersion.VERSION_17
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -18,34 +19,51 @@ repositories {
 	mavenCentral()
 }
 
+// def dgsVersion = '8.7.1'
 ext {
 	set('netflixDgsVersion', "8.7.1")
 }
 
 dependencies {
+	// Spring Boot core starter
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
+
+	// Netflix DGS (domain graph service)
+	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:${netflixDgsVersion}"))
 	implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter'
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter'
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-micrometer'
+	implementation 'com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure'
+
+	// DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	implementation 'net.datafaker:datafaker:1.9.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework:spring-webflux'
 	testImplementation 'org.springframework.graphql:spring-graphql-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:${netflixDgsVersion}"
-	}
-}
-
 generateJava {
-	schemaPaths = ["${projectDir}/src/main/resources/graphql-client"]
-	packageName = 'com.ywz.graphql.codegen'
+	typeMapping = ["BigDecimal": "java.math.BigDecimal"]
+	packageName = 'com.ywz.graphql.generated'
 	generateClient = true
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+}
+
+bootJar {
+	manifest {
+		attributes 'Implementation-Version': "${version}"
+		attributes 'Implementation-Title': "${project.name}"
+		attributes 'Manifest-Version': "1.0"
+	}
 }
