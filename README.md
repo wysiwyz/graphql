@@ -143,7 +143,7 @@ type Video {
 
 ### how to create a GraphQL API (using NodeJS)
 
-時間不足，只能先看看
+~~時間不足，只能先看看~~
 
 Execute below command to start a new nodejs project and install dependencies
 
@@ -194,6 +194,22 @@ Viola! Here's the result!
 ![ApolloServer](src/main/resources/static/apollo.png)
 
 ### GraphQL Resolvers
+
+- Short hand notation for whenever your key is equal to the value
+  ```javascript
+  _.find(UserList, { id : id });
+  _.find({ id });
+  ```
+  
+#### Add user resolvers
+![Resolvers](src/main/resources/static/resolvers.png)
+
+#### Add movie resolvers
+![Resolvers](src/main/resources/static/resolver-movie.png)
+
+如果每個 User 會有對應的 favorite movie array，但我們不要直接把 movie detail 全部放進這個 array 怎麼做?
+
+可以透過 creating resolver for the user type 來達成
 
 
 ### Mutations
