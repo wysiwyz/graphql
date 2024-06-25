@@ -64,7 +64,7 @@ type Video {
   > When expected as an input type, any string (such as "4") or integer (such as 4) input value will be accepted as an ID.
 - 上述的語法自定義了另外一個 type User
 - `!` 表示為必要欄位/不可為null
-- `[``]` 當某個欄位具有不只一個元素(array)，用中括號表示
+- `[<custom-defined-type>]` 當某個欄位具有不只一個元素(array)，用中括號表示
 - 通常array不會加!表示必填
   - `[User!]`: 不一定要有任何朋友，但是如果有朋友，一定要提供User
   - `[User:!]!`: 一定要有 array (通常array不需要為必填)
@@ -127,9 +127,9 @@ type Video {
   ```
 - 查詢語言且傳入的參數非必填 `={}`
 
-  ![filter: filterInput={}](https://imgur.com/1zYQTjB)
+  ![filter: filterInput](src/main/resources/static/languages.png)
   ```
-    {
+  {
     languages {
       code
       name
@@ -138,20 +138,74 @@ type Video {
     }
   }
   ```
-
-[Countries GraphQL API](https://github.com/trevorblades/countries)
+#### Reference GraphQL API
+[Link to the Countries GraphQL API](https://github.com/trevorblades/countries)
 
 ### how to create a GraphQL API (using NodeJS)
+
 時間不足，只能先看看
 
+Execute below command to start a new nodejs project and install dependencies
+
+```bash
+# initializing a nodeJS project
+npm init
+# hit enters and it will generate package.json for you
+
+npm install apollo-server graphql 
+# notice that the dependencies are added to package.json
+
+# install nodemon to prevent server from restarting everytime you make any change
+npm install nodemon
+```
+
+add a start script to the `package.json` file, so as to run nodemon into our packages
+
+```json
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  }
+}
+```
+
+create an `index.js` file
+
+import some stuff form apollo-server library
+
+`new ApolloServer()` takes in two parameters:
+1. type definition - typeDefs
+   - 所有你定義在 graphql 的 type 都在這
+2. resolvers
+   - 所有對這些 type 做處理的 functions 都在這
+   - 例如 make calls to the api, interacting with database
+
+Apollo GraphQL VScode extension is very helpful while composing typeDefs.
+
+Use `module.exports` and `const { } = require( )` to create parameter for this Apollo Server
+
+```bash
+npm start
+```
+
+Viola! Here's the result!
+
+![ApolloServer](src/main/resources/static/apollo.png)
+
+### GraphQL Resolvers
+
+
+### Mutations
+
+
+### UseQuery Hook in Apollo Client
+
+
+### UseMutation Hook in Apollo Client
+
+### Context, Fragments, Union Result Boxes
 
 
 
-### GraphQL language
-Types, Queries, Mutations, Scalars, Enums, Unions
-
-
-### 如何從React 的 Apollo Client 串接一個 GraphQL API
-All the things you can do with Apollo Client in React
-Apollo Client 是 React + GraphQL 最廣泛使用的 library
 
