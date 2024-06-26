@@ -209,16 +209,42 @@ Viola! Here's the result!
 
 如果每個 User 會有對應的 favorite movie array，但我們不要直接把 movie detail 全部放進這個 array 怎麼做?
 
-可以透過 creating resolver for the user type 來達成
+可以透過 creating resolver for the user type 來達成，如下結果
 
+![favoriteMovies](src/main/resources/static/favoriteMovies.png)
 
 ### Mutations
+
+#### 增加 user
+- 可以建立一個 input
+- 使用 `=` 替必填但沒有input值的欄位加入預設值
+  ```graphqls
+  input CreateUserInput {
+      name: String!
+      username: String!
+      age: Int = 18 
+      nationality: Nationality!
+      friends: [User]
+      favoriteMovies: [Movie]
+  }
+  ```
+- 驗證結果如下  
+  ![createUser](src/main/resources/static/createUser.png)
+
+#### 更新 user 名稱
+- 驗證結果如下
+  ![updateUsername](src/main/resources/static/updateUsername.png)
+
+#### 刪除一筆 user
+- 驗證結果如下
+  ![deleteUserById](src/main/resources/static/deleteUser.png)
 
 
 ### UseQuery Hook in Apollo Client
 
 
 ### UseMutation Hook in Apollo Client
+
 
 ### Context, Fragments, Union Result Boxes
 

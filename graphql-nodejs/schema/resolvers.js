@@ -26,6 +26,43 @@ const resolvers = {
             return user;
         }
     },
+    User: {
+        favoriteMovies: () => {
+            return _.filter(
+                MovieList, 
+                (movie) => 
+                    movie.yearOfPublication >= 2000 && movie.yearOfPublication <= 2023)
+        }
+    },
+    Mutation: {
+        createUser: (parent, args) => {
+            const user = args.input; // input: CreateUserInput
+            // console.log(user);
+            const lastId = UserList[UserList.length-1].id;
+            user.id = lastId + 1;
+            UserList.push(user);
+            return user;
+        },
+        updateUsername: (parent, args) => {
+            // const id = args.input.id;
+            // const newUsername = args.input.newUsername 下面的寫法等價於這兩行
+            const {id, newUsername} = args.input;
+            let userUpdated;
+            UserList.forEach((user) => {
+                if (user.id === Number(id)) {
+                    user.username = newUsername;
+                    userUpdated = user;
+                }
+            });
+            return userUpdated;
+        },
+        deleteUser: (parent, args) => {
+            const id = args.id;
+            // this function will loop thru the userlist, find the id and remove this element
+            _.remove(UserList, (user) => user.id === Number(id));
+            return null;
+        }
+    },
 };
 
 module.exports = { resolvers }
