@@ -2,7 +2,7 @@
 // first you need to install VScode extension ES7 React/Redux/GraphQL/React-Native snippets
 
 import React, { useState } from 'react'
-import { useQuery, useLazyQuery, gql } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation, gql } from "@apollo/client";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {
@@ -36,36 +36,72 @@ const GET_MOVIE_BY_NAME = gql`
         }
     }`; // 如果是帶參數的Query，外層的名稱需要跟 type-defs 定義的一樣，只是首字母轉大寫
 
+// 這裡 createUser 第一個 input 要跟定義在 type-defs.js 的名字一樣
+// createUser(input: CreateUserInput!): User 
+const CREATE_USER_MUTATION = gql`
+    mutation CreateUser($input: CreateUserInput!) {
+        createUser(input: $input) { 
+            id
+            name
+            username
+            age
+            nationality
+        }
+    }`;
 function DisplayData() {
+    // search for a movie state
+    const [movieSearched, setMovieSearched] = useState(''); // !⚠ not const{movieSearched, setMovieSearched}
 
-    const [ movieSearched, setMovieSearched ] = useState(''); // !⚠ not const{movieSearched, setMovieSearched}
+    // create user state
+    const [name, setName] = useState('');
+    const [age, setAge] = useState(0);
+    const [username, setUsername] = useState('');
+    const [nationality, setNationality] = useState('');
 
     // name of the function, data
-    const [fetchMovie, {data: movieSearchedData, error: movieError}] = useLazyQuery(GET_MOVIE_BY_NAME);
-    const { data, loading, error } = useQuery(QUERY_ALL_USERS);
+    const [fetchMovie, { data: movieSearchedData, error: movieError }] = useLazyQuery(GET_MOVIE_BY_NAME);
+
+    // mutation hook
+    const [createUser, {data: userCreatedData, error: userCreatedError}] = useMutation(CREATE_USER_MUTATION);
+
+    const { data, loading, refetch } = useQuery(QUERY_ALL_USERS);
     const { data: movieData } = useQuery(QUERY_ALL_MOVIES);
     // to give them different name
 
     if (loading) {
         return <h1>Data is loading ...</h1>
     }
-    if (error) {
-        console.log(error);
-    }
-    if (data) {
-        console.log(data);
-    }
-    if (movieData) {
-        console.log(movieData);
-    }
-    if (movieSearchedData) {
-        console.log(movieSearchedData);
-    }
-    if (movieError) {
-        console.log(movieError);
-    }
+
     return (
         <div>
+            <div>
+                <input type='text' placeholder='Name' onChange={(event) => {
+                    setName(event.target.value);
+                }} />
+                <input type='text' placeholder='Username' onChange={(event) => {
+                    setUsername(event.target.value);
+                }} />
+                <input type='number' placeholder='Age' onChange={(event) => {
+                    setAge(event.target.value);
+                }} />
+                <input type='text' placeholder='Nationality' onChange={(event) => {
+                    setNationality(event.target.value.toUpperCase());
+                }} />
+                <button onClick={() => {
+                    createUser({
+                        variables: {
+                            input: {
+                                name, // name: name,
+                                username,
+                                age: Number(age),
+                                nationality
+                            }
+                        }
+                    });
+                    refetch();
+                }}>Create User</button>
+            </div>
+
             <h1>All Users</h1>
             <div>{data && data.users.length > 0 ? (
                 data.users.map((user) => (
@@ -95,7 +131,7 @@ function DisplayData() {
             <div>
                 <input type='text' placeholder='The Batman' onChange={(event) => {
                     setMovieSearched(event.target.value);
-                    }}></input>
+                }}></input>
                 <button onClick={() => {
                     fetchMovie({
                         variables: {

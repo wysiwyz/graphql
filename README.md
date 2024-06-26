@@ -309,6 +309,31 @@ Chrome
 
 ### Use Mutation Hook in Apollo Client
 
+Errors and how to troubleshoot: hardcode one-by-one
+![error](src/main/resources/static/createUserMutation_error_01.png)
+- mutation creatUser 不小心寫成大寫的 C
+- 傳入的 age 被視為 String, 要轉型成 number
+- 輸入的 Nationality 不存在 enum 裡面 (Fixme: 改成下拉選單)
+
+驗證OK但是要手動刷新頁面才看的到新增的 user，解法?
+- 其中一種解法是 refetch useQuery，非常之好用 💛💚💙
+  ```js
+  const { data, loading, refetch } = useQuery(QUERY_ALL_USERS);
+  // some other codes
+  <button onClick={() => {
+    createUser({
+      variables: { 
+        input: {
+          name, // name: name,
+          username,
+          age: Number(age),
+          nationality
+          }
+      }
+    });
+    refetch();
+  }}>Create User</button>
+  ```
 
 ### Context, Fragments, Union Result Boxes
 

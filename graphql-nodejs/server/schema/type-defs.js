@@ -51,6 +51,9 @@ const typeDefs = gql`
        CANADA
        MEXICO 
        TAIWAN
+       UKRAINE
+       TURKEY
+       BRAZIL
    }
 `;
 
