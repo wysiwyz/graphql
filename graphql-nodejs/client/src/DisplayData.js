@@ -48,6 +48,14 @@ const CREATE_USER_MUTATION = gql`
             nationality
         }
     }`;
+
+const DELETE_USER_MUTATION = gql`
+    mutation DeleteUser($id: ID!) {
+        deleteUser(id: $id) { 
+            id
+        }
+    }`;
+
 function DisplayData() {
     // search for a movie state
     const [movieSearched, setMovieSearched] = useState(''); // !⚠ not const{movieSearched, setMovieSearched}
@@ -58,12 +66,17 @@ function DisplayData() {
     const [username, setUsername] = useState('');
     const [nationality, setNationality] = useState('');
 
+    // update user state
+
+    // delete user state
+    const [idToDelete, setDeleteId] = useState(0);
+
     // name of the function, data
     const [fetchMovie, { data: movieSearchedData, error: movieError }] = useLazyQuery(GET_MOVIE_BY_NAME);
 
     // mutation hook
     const [createUser, {data: userCreatedData, error: userCreatedError}] = useMutation(CREATE_USER_MUTATION);
-
+    const [deleteUser] = useMutation(DELETE_USER_MUTATION);
     const { data, loading, refetch } = useQuery(QUERY_ALL_USERS);
     const { data: movieData } = useQuery(QUERY_ALL_MOVIES);
     // to give them different name
@@ -74,6 +87,7 @@ function DisplayData() {
 
     return (
         <div>
+            <h1>Create user:</h1>
             <div>
                 <input type='text' placeholder='Name' onChange={(event) => {
                     setName(event.target.value);
@@ -101,11 +115,33 @@ function DisplayData() {
                     refetch();
                 }}>Create User</button>
             </div>
+            <h1>Update user:</h1>
+            <div>
 
+            </div>
+            <h1>Delete user:</h1>
+            <div>
+            <input type='number' placeholder='user ID' onChange={(event) => {
+                setDeleteId(event.target.value);
+            }} />
+            <button onClick={() => {
+                console.log(typeof idToDelete) // string
+                console.log(idToDelete)        // 9
+                deleteUser({
+                    variables: {
+                        input: {
+                            id: idToDelete
+                        }
+                    }
+                });
+                refetch();
+            }}>Delete this user</button>
+            </div>
             <h1>All Users</h1>
             <div>{data && data.users.length > 0 ? (
                 data.users.map((user) => (
                     <div key={user.id}>
+                        <div>User ID: {user.id}</div>
                         <div>Name: {user.name}</div>
                         <div>Username: {user.username}</div>
                         <div>Age: {user.age}</div>
