@@ -1,12 +1,7 @@
 這篇 README 分為兩部分，第一部分說明專案架構以及啟動/驗證/測試步驟，第二部分則是根據 [Youtube tutorials](https://youtube.com/playlist?list=PLpPqplz6dKxXICtNgHY1tiCPau_AwWAJU&si=bcgwV3eVYsUWdzJp) 所做的筆記。
 
-## Application GraphQL
-
-
-
-
-
 ---
+
 ## GraphQL - Beginner to Expert
 Resources are credited by pedro tech and this playlist seems very insightful so I took notes.
 
@@ -249,5 +244,39 @@ Viola! Here's the result!
 ### Context, Fragments, Union Result Boxes
 
 
+---
+## Application GraphQL
 
+先不管 npm 跟 node js 了，快回來喝杯 javacano ☕
 
+1. 首先在 Spring initializr 加上以下的 dependencies 並下載 project
+   ```
+   ✅ Spring for GraphQL [WEB]
+   Build GraphQL applications with Spring for GraphQL and GraphQL Java.
+
+   ✅ Spring Boot Actuator [OPS]
+   Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health, metrics, sessions, etc.
+
+   ✅ GraphQL DGS Code Generation [DEVELOPER TOOLS]
+   Generate data types and type-safe APIs for querying GraphQL APIs by parsing schema files.
+
+   ✅ Netflix DGS [WEB]
+   Build GraphQL applications with Netflix DGS and Spring for GraphQL.
+
+   ✅ Spring Web [WEB]
+   Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.
+
+   ✅ PostgreSQL Driver [SQL]
+   A JDBC and R2DBC driver that allows Java programs to connect to a PostgreSQL database using standard, database independent Java code.
+   ```
+2. 調整 application 設定檔並加入其它會用到的 dependencies
+   - scalars 用來加入 `ExtendedScalars`
+   - micrometer 用來收集 metrics 並將收集到的指標送進監控工具 (Prometheus, Graphite, Datadog) 做可視化分析
+   - subscriptions-websockets 使用 websocket 實現 GraphQL 訂閱
+   - datafaker 用來生成各種格式/類型的假資料, 可以做單元測試的數據, 或模擬用戶行為做性能測試
+   ```groovy
+   	implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
+	  implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-micrometer'
+	  implementation 'com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure'
+  	implementation 'net.datafaker:datafaker:1.9.0'
+   ```

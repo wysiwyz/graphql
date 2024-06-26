@@ -30,6 +30,4 @@ logging:
       netflix:
         graphql:
           dgs: DEBUG
-          dgs:
-            subscriptions:
-              websockets: DEBUG
+          dgs.subscriptions.websockets: DEBUG
