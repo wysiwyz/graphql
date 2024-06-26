@@ -64,7 +64,7 @@ type Video {
   - `[User!]`: 不一定要有任何朋友，但是如果有朋友，一定要提供User
   - `[User:!]!`: 一定要有 array (通常array不需要為必填)
 
-- 每個 GraphQL API 都必需要有 schema，這個 schema 跟資料庫的 db schema 不一樣
+- 每個 GraphQL API 都必須要有 schema，這個 schema 跟資料庫的 db schema 不一樣
 - 另外會有一個 root type 稱為 Query，裡面放不同查詢(查全部、以ID查單筆)
   ```graphqls
   type Query {
@@ -257,23 +257,44 @@ Viola! Here's the result!
 7. Open another terminal, @ client directory, enter command `npm install @apollo/client`
 8. @ App.js, import ApolloClient, InMemoryCache, ApolloProvider
 9. New an Apollo Client with a few parameters (cache and uri)
-10. Create an new component named `DisplayData.js`
+10. Create a new component named `DisplayData.js`
 11. 使用 `gql()` 生成查詢參數，再將查詢參數傳入`useQuery()`函式，會拿到三個回傳值
 12. 用 `{ data && data.users.map(...) }` render view
-13. 注意如果 query 多個條件，避免重複參數的方式如下 (data assigne to movieData)
+13. 注意如果 query 多個條件，避免重複參數的方式如下 (data assign to movieData)
     ```javascript
     const { data, loading, error } = useQuery(QUERY_ALL_USERS);
     const { data: movieData } = useQuery(QUERY_ALL_MOVIES);
     ```
 
 #### 有查詢條件 (query with input)
-1. 透過 create state 達成以名字查詢
+1. 透過 create state 達成以名字查詢單筆資料
+2. 傳入參數進 `$nameInput` 有兩種方式
+   ```js
+   // first way:
+   const [fetchMovie, {data: movieSearchedData, error: movieError}] = useLazyQuery(GET_MOVIE_BY_NAME, {variable: {nameInput: movieSearched}});
+   ```
+   ```js
+   // second way: pass through function 這裡用的是這個
+   // onClick={fetchMovie}
+   onClick={() =>{fetchMovie({variables: {nameInput: movieSearched}})}}
+   ```
+3. 注意 useState 函式是返回一個 array 包含兩個元素，不是返回一個物件包含兩個 field，寫成大括號會拋錯
+   ```js
+   import React, { useState } from 'react'
 
-#### What is useQuery hook?
+   const [ movieSearched, setMovieSearched ] = useState(''); 
+   ```
+4. 驗證結果如下
+
+   <img src="src/main/resources/static/getMovie_success.png" alt="success" height="500">
+   <img src="src/main/resources/static/getMovie_err.png" alt="error" height="500">
+   
+
+#### Note1: What is useQuery hook?
 - useQuery 在 Apollo client library 是非常重要的概念，是用來與 Query API 交互取得資料的錨點
 - 另外也有 useQueryLazy, useMutation 等等的 Hook
 
-#### Useful extension: 
+#### Note2: Useful extension: 
 VS code
 - ES7 React/Redux/GraphQL/React-Native snippets:
   - `rfce` 快速產生一個 functional component template
@@ -283,6 +304,8 @@ VS code
 
 Chrome
 - [Apollo Client Devtools](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm)
+
+
 
 ### Use Mutation Hook in Apollo Client
 
@@ -321,8 +344,8 @@ Chrome
    - subscriptions-websockets 使用 websocket 實現 GraphQL 訂閱
    - datafaker 用來生成各種格式/類型的假資料, 可以做單元測試的數據, 或模擬用戶行為做性能測試
    ```groovy
-   	implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
-	  implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-micrometer'
-	  implementation 'com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure'
-  	implementation 'net.datafaker:datafaker:1.9.0'
+   implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
+   implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-micrometer'
+   implementation 'com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure'
+   implementation 'net.datafaker:datafaker:1.9.0'
    ```
