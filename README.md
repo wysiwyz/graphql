@@ -237,8 +237,54 @@ Viola! Here's the result!
 
 ### UseQuery Hook in Apollo Client
 
+#### 沒有查詢條件 (no input)
+1. 將 `graphql-nodejs` 目錄底下的內容拆分成 client 目錄與先前建立的 server 目錄
+2. 在 client folder 建立一個 REACT APP
+   ```bash
+   cd graphql-nodejs/client/
 
-### UseMutation Hook in Apollo Client
+   # this takes a lot of time to download modules
+   npx create-react-app . 
+   ```
+3. 移除不會用到的檔案
+   - App.test.js
+   - index.css
+   - logo.svg
+   - setupTests.js
+4. @ index.js, remove the `import './index.css';`
+5. @ App.js, remove the `import logo from './logo.svg';` and header label which won't be used here
+6. Open a terminal, @ client directory, enter command `npm start`, this should prompt a new browser window
+7. Open another terminal, @ client directory, enter command `npm install @apollo/client`
+8. @ App.js, import ApolloClient, InMemoryCache, ApolloProvider
+9. New an Apollo Client with a few parameters (cache and uri)
+10. Create an new component named `DisplayData.js`
+11. 使用 `gql()` 生成查詢參數，再將查詢參數傳入`useQuery()`函式，會拿到三個回傳值
+12. 用 `{ data && data.users.map(...) }` render view
+13. 注意如果 query 多個條件，避免重複參數的方式如下 (data assigne to movieData)
+    ```javascript
+    const { data, loading, error } = useQuery(QUERY_ALL_USERS);
+    const { data: movieData } = useQuery(QUERY_ALL_MOVIES);
+    ```
+
+#### 有查詢條件 (query with input)
+1. 透過 create state 達成以名字查詢
+
+#### What is useQuery hook?
+- useQuery 在 Apollo client library 是非常重要的概念，是用來與 Query API 交互取得資料的錨點
+- 另外也有 useQueryLazy, useMutation 等等的 Hook
+
+#### Useful extension: 
+VS code
+- ES7 React/Redux/GraphQL/React-Native snippets:
+  - `rfce` 快速產生一個 functional component template
+- Import Cost by Wix:
+  - 適用於優化應用程式的大小與性能表現
+  - 在 import ... 右邊欄位顯示要引入的模組大小 (e.g. `21k, gzipped: 7.5k)`)
+
+Chrome
+- [Apollo Client Devtools](https://chromewebstore.google.com/detail/apollo-client-devtools/jdkknkkbebbapilgoeccciglkfbmbnfm)
+
+### Use Mutation Hook in Apollo Client
 
 
 ### Context, Fragments, Union Result Boxes
