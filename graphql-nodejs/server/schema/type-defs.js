@@ -21,11 +21,23 @@ const typeDefs = gql`
    }
 
    type Query {
-       users: [User!]!
+       users: UserResult
        user(id: ID!): User!
        movies: [Movie!]!
        movie(name: String!): Movie! 
    }
+   
+   # errorhanding for not nullable types
+   type UsersSuccessfulResult {
+       users: [User!]!
+   }
+     
+   type UsersErrorResult {
+       message: String!
+   }
+
+   # merge successful/error result into an union
+   union UserResult = UsersSuccessfulResult | UsersErrorResult
 
    input CreateUserInput {
        name: String!

@@ -4,12 +4,16 @@ const _ = require("lodash");
 const resolvers = {
     Query: {
         // USER RESOLVERS
-        users: () => {
+        users: (parent, args, context, info) => {
             // write js to tell GraphQL what we want it to return
             // if you have database, it is here that you write api to call db
-            return UserList;
+            // console.log(context.req.headers); // common use case to check authn & authz
+            if (UserList) {
+                return { users: UserList };
+            }
+            return { message: "Yo, there was an error" }
         },
-        user: (parent, args) => {
+        user: (parent, args, context, info) => {
             // args: whatever data that user passes
             const id = args.id;
             const user = _.find(UserList, { id: Number(id) });
@@ -63,6 +67,22 @@ const resolvers = {
             return null;
         }
     },
+    // 注意這個woridng要跟type-defs裡面的union名稱一模一樣
+    UserResult: { 
+        // A resolver for success/error cases
+        __resolveType(obj) {
+            if (obj.users) {
+                // return obj.users;
+                return "UsersSuccessfulResult";
+            }
+            if (obj.message) {
+                // return obj.message;
+                return "UsersErrorResult";
+            }
+            
+            return null; // graphql validation error
+        }
+    }
 };
 
 module.exports = { resolvers }

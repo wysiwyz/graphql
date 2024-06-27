@@ -337,6 +337,72 @@ Errors and how to troubleshoot: hardcode one-by-one
 
 ### Context, Fragments, Union Result Boxes
 
+the last three topics: 
+1. Four different arguments you can use in a resolver function:
+
+- resolvers.js user function 實際上可以使用四個不同參數
+  - parent: It will return whatever was returned from the previous level in the graphql graph
+    ```
+    query -> users -> favoriteMovies -> anotherLevel
+    假設在 favoriteMovies 函式裡印出 parent，會看到父層 (call 這個 api 的父層資料)
+    ```
+  - context: It stands for the return value of this function, 常用在驗證授權 (check headers)
+  - args: 
+  - info: some information about the graphql request
+```js
+user: (parent, args, context, info) => {...}
+```
+2. Fragments
+   - best for reusing codes and avoid redundant codes
+   - specify what these field are by making them into variable, so that you don't need to list them all the some
+     ```graphqls
+     fragment GetAgeAndName on User {
+       name
+       age
+       nationality
+     }
+
+     query ExampleQuery {
+       users {
+         ...GetAgeAndName
+       }
+     }
+     ```
+
+3. Errorhandling for clean code 
+   - resultboxes 
+   - unions
+
+     @ type-defs.js
+     ```graphqls
+     type Query {
+       #users: [Users!]!
+       users: UserResult
+     }
+
+     # errorhanding for not nullable types
+     type UsersSuccessfulResult {
+      users: [User!]!
+     }
+     
+     type UsersErrorResult {
+      message: String!
+     }
+     # merge successful/error result into an union
+     union UserResult = UsersSuccessfulResult | UsersErrorResult
+
+     ```
+   - troubleshoot:
+     - Instead of returning obj.users and obj.message, we return a string of `UsersSuccessfulResult` and `UsersErrorResult`
+     
+       ![success](src/main/resources/static/union_success.png)
+
+       ![error](src/main/resources/static/union_error.png)
+
+
+> Result boxes: Whenever we have a mutation or query, 
+
+
 
 ---
 ## Application GraphQL
